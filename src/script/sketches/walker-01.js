@@ -5,6 +5,28 @@ class Branch {
     constructor(x, y){
         this.x = this.px = x;
         this.y = this.py = y;
+        this.visible = true;
+        this.color = p5s.color(p5s.random(10, 110 + 100), 70, 100, 100);
+        this.speed = {
+            x:p5s.random(-7, 7),
+            y:p5s.random(-7, 7),
+        }
+    }
+    draw() {
+        p5s.line(this.px, this.py, this.x, this.y);
+    }
+    move(){
+        this.x += this.speed.x * 4;
+        this.y += this.speed.y * 4;
+    }
+    testBounds(){
+        // console.log(width);
+        this.px = this.x;
+        this.py = this.y;
+        if(this.x < 0 || this.x > p5s.width || this.y < 0 || this.y > p5s.height){
+            console.log('die');
+            this.visible = false;
+        }
     }
 }
 
@@ -14,25 +36,35 @@ const sketch = (p) => {
     let branches = [];
     const createBranches = (amount = 0)=>{
         for(let i = 0 ; i < amount ; i++){
-            branches.push(new Branch(100, 100))
+            branches.push(new Branch(p.windowWidth / 2, p.windowHeight / 2))
         }
     }
     p.setup = ()=> {
-        p.createCanvas(640, 480);
+        p.createCanvas(p.windowWidth, p.windowHeight);
+        p.strokeCap(p.SQUARE);
+        p.strokeWeight(10);
         createBranches(1);
         console.log(branches);
         // drawShape();
-
+        
     }
     
     p.draw = ()=> {
-    //   p.ellipse(x, 50, 80, 80);
-      x += 5;
-}
-const drawShape = ()=>{
-      p.ellipse(110, 150, 80, 180);
-
+        //   p.ellipse(x, 50, 80, 80);
+        branches.forEach( branch => {
+            if(branch.visible){
+                p.stroke(p.random([100, 150, 200, 250]))
+                branch.move();
+                branch.draw();
+                branch.testBounds();
+            }
+        })
+        x += 5;
     }
-
+    const drawShape = ()=>{
+        p.ellipse(110, 150, 80, 180);
+        
+    }
+    
 }
 const p5s = new p5(sketch);
