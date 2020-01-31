@@ -16,8 +16,10 @@ class Branch {
         p5s.line(this.px, this.py, this.x, this.y);
     }
     move(){
-        this.x += this.speed.x * 4;
-        this.y += this.speed.y * 4;
+        this.speed.x += p5s.random(-10, 10);
+        this.speed.y += p5s.random(-10, 10);
+        this.x += this.speed.x;
+        this.y += this.speed.y;
     }
     testBounds(){
         // console.log(width);
@@ -35,6 +37,7 @@ const sketch = (p) => {
     let x = 0;
     let branches = [];
     const createBranches = (amount = 0)=>{
+        branches = [];
         for(let i = 0 ; i < amount ; i++){
             branches.push(new Branch(p.windowWidth / 2, p.windowHeight / 2))
         }
@@ -42,13 +45,20 @@ const sketch = (p) => {
     p.setup = ()=> {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.strokeCap(p.SQUARE);
-        p.strokeWeight(10);
+        p.strokeWeight(5);
         createBranches(1);
         console.log(branches);
+        document.querySelector('canvas').addEventListener('click', p.windowResized);
         // drawShape();
         
     }
-    
+    p.windowResized = ()=>{
+        console.log('resized');
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+        p.clear();
+        // n.seed(p.random(100));
+        createBranches(1);
+    }
     p.draw = ()=> {
         //   p.ellipse(x, 50, 80, 80);
         branches.forEach( branch => {
