@@ -16,8 +16,10 @@ class Branch {
         p5s.line(this.px, this.py, this.x, this.y);
     }
     move(){
-        this.speed.x += p5s.random(-10, 10);
-        this.speed.y += p5s.random(-10, 10);
+        // this.speed.x += p5s.random(-10, 10);
+        // this.speed.y += p5s.random(-10, 10);
+        this.speed.x += (p5s.noise(this.x * .0005, this.y * .005, p5s.millis() * .0001) * 2) -1;
+        this.speed.y += (p5s.noise(this.y * .005, this.x * .005, p5s.millis() * .0001) * 2) -1;
         this.x += this.speed.x;
         this.y += this.speed.y;
     }
@@ -33,8 +35,10 @@ class Branch {
 }
 
 const sketch = (p) => {
-    let n = p.noise;
     let x = 0;
+    let counter = p.millis();
+    const n = p.noise;
+    // n.simplex3();
     let branches = [];
     const createBranches = (amount = 0)=>{
         branches = [];
@@ -45,8 +49,8 @@ const sketch = (p) => {
     p.setup = ()=> {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.strokeCap(p.SQUARE);
-        p.strokeWeight(5);
-        createBranches(1);
+        p.blendMode(p.BLEND);
+        createBranches(500);
         console.log(branches);
         document.querySelector('canvas').addEventListener('click', p.windowResized);
         // drawShape();
@@ -56,15 +60,22 @@ const sketch = (p) => {
         console.log('resized');
         p.resizeCanvas(p.windowWidth, p.windowHeight);
         p.clear();
-        // n.seed(p.random(100));
-        createBranches(1);
+        p.noiseSeed(p.random(100));
+        counter = p.millis();
+        createBranches(1000);
     }
     p.draw = ()=> {
         //   p.ellipse(x, 50, 80, 80);
         branches.forEach( branch => {
             if(branch.visible){
-                p.stroke(p.random([100, 150, 200, 250]))
+                // p.stroke(p.random([100, 150, 200, 250]));
+                const a = 100 - ((p.millis() - counter) * .075)
                 branch.move();
+                p.strokeWeight(3);
+                p.stroke(40, 50, 60, a - 40);
+                branch.draw();
+                p.strokeWeight(1);
+                p.stroke(20, 30, 40, a);
                 branch.draw();
                 branch.testBounds();
             }
