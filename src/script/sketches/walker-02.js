@@ -1,4 +1,4 @@
-import {create, select} from '../utils/trix';
+import {create, select, map} from '../utils/trix';
 import p5 from 'p5';
 const colors = [
     '#417378',
@@ -45,11 +45,17 @@ const sketch = (p) => {
     let counter = p.millis();
     const n = p.noise;
     // n.simplex3();
+    let y = p.windowHeight *.7;
+    let xVal = {
+        start:p.windowWidth *.1,
+        end:p.windowWidth *.9,
+    }
     let branches = [];
     const createBranches = (amount = 0)=>{
         branches = [];
         for(let i = 0 ; i < amount ; i++){
-            branches.push(new Branch(p.windowWidth / 2, p.windowHeight / 2))
+            const x = map(i, 0, amount, xVal.start, xVal.end);
+            branches.push(new Branch(x, y));
         }
     }
     p.setup = ()=> {
