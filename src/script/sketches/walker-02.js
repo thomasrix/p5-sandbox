@@ -1,10 +1,9 @@
 import {create, select, map} from '../utils/trix';
 import p5 from 'p5';
-const colors = [
-    '#417378',
-    '#a4cfbe',
-    '#f4f7d9',
-];
+import TrixColors from '../utils/trix-colors';
+
+const theColors = new TrixColors()
+const colors = theColors.getColor(2);
 const branchAmount = 2000;
 class Branch {
     constructor(x, y){
@@ -97,7 +96,6 @@ const sketch = (p) => {
     }
     const drawShape = ()=>{
         p.ellipse(110, 150, 80, 180);
-        
     }
     
 }
