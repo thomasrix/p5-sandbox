@@ -31,6 +31,16 @@ export default class TrixColors{
                 ]
             },
             {
+                name:'orange red',
+                values:[
+                    '#f2852a',
+                    '#f8650c',
+                    '#F75105',
+                    '#CD1E01',
+                    '#730202',
+                ]
+            },
+            {
                 name:'azul',
                 values:[
                     '#407480',
