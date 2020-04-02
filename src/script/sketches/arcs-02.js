@@ -1,17 +1,20 @@
 import {create, select} from '../utils/trix';
+import '../utils/circle-configs';
 import p5 from 'p5';
+import circles from '../utils/circle-configs';
 
 
 const sketch = (p) => {
-    const circleCount = 500;
-    const circleSteps = 100;
-    const circleStep = Math.PI * 2 / circleSteps;
-    const radius = Math.max(p.windowWidth * 0.25, p.windowHeight * 0.25);
+    const radius = Math.min(p.windowWidth * 0.33, p.windowHeight * 0.33);
     const center = {x: p.windowWidth * 0.5, y: p.windowHeight * 0.5};
-    const bgColor = p.color('#16191a');
     p.colorMode(p.RGB, 255, 255, 255, 1);
-    let endColor = p.color(0, 0, 0, 0.8);
-    let startColor = p.color(255, 145, 0, 0.1);
+    // const bgColor = p.color(12, 5, 1);
+    const bgColor = p.color(200, 205, 201);
+    let endColor = p.color(144, 54, 1, 0.5);
+    let startColor = p.color(254, 204, 0, 0.1);
+
+    const circleConfigs = circles(p);
+
     let x = 0;
     p.setup = ()=> {
        
@@ -20,10 +23,13 @@ const sketch = (p) => {
         p.fill(bgColor);
         p.rect(0, 0, p.width, p.height);
         p.noFill();
-        for(let i = 0 ; i < circleCount ; i ++ ){
-            p5s.noiseSeed(i*20);
-            drawCircle(i);
-        }
+        circleConfigs.forEach(c => {
+            c.step = Math.PI * 2 / c.steps;
+            for(let i = 0 ; i < c.count ; i ++ ){
+                p5s.noiseSeed(c.noiseSeedStart + i);
+                drawCircle(i, c);
+            }
+        })
         // drawPerfectCircle();
     }
     
@@ -43,7 +49,10 @@ const sketch = (p) => {
         return p;
     }
     const drawPerfectCircle = () => {
-        p.stroke('#FFFFFF');
+        const circleCount = 300;
+        const circleSteps = 100;
+        const circleStep = Math.PI * 2 / circleSteps;
+    p.stroke('#FFFFFF');
         p.strokeWeight(0.5);
 
         let angle = 0;
@@ -70,9 +79,10 @@ const sketch = (p) => {
         }
 
     }
-    const drawCircle = (index) => {
+    const drawCircle = (index, circleObject) => {
         let angle = 0;
-        let strength = p.map(index, 0, circleCount, 20, 50);
+        let strength = p.map(index, 0, circleObject.count, circleObject.strength.start, circleObject.strength.end);
+        // console.log(index, strength);
         const sp = perlinize(center.x + Math.cos(angle) * radius, center.y + Math.sin(angle) * radius, strength);
         const position = {
             x:sp.x,
@@ -80,14 +90,14 @@ const sketch = (p) => {
         };
         // const start = {...position};
         // const hue = 200;
-        const cl = p.lerpColor(startColor, endColor, p.norm(index, 0, circleCount * 1.05));
+        const cl = p.lerpColor(circleObject.startColor, circleObject.endColor, p.norm(index, 0, circleObject.count));
         // cl.setAlpha(50 - index);
         p.stroke(cl);
-        p.strokeWeight(2);
+        p.strokeWeight(circleObject.strokeWeight);
         p.strokeCap(p.SQUARE);
 
         const drawLine = (pos, i) => {
-            angle = i * circleStep;
+            angle = i * circleObject.step;
             
             const p = perlinize(center.x + Math.cos(angle) * radius, center.y + Math.sin(angle) * radius, strength);
             
@@ -98,7 +108,7 @@ const sketch = (p) => {
             pos.y = p.y;
 
         }
-        for(let i = 1 ; i < circleSteps +1; i++){
+        for(let i = 1 ; i < circleObject.steps +1; i++){
             drawLine(position, i);
         }
         // p5s.line(start.x, start.y, position.x, position.y);
