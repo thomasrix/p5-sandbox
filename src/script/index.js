@@ -5,7 +5,8 @@ import {create, select} from './utils/trix';
 // import './sketches/walker-03';
 // import './sketches/arcs-01';
 // import './sketches/arcs-02';
-import './sketches/arcs-03';
+// import './sketches/arcs-03';
+import './sketches/arcs-04';
 // import './sketches/tweener';
 
 
