@@ -36,7 +36,7 @@ const sketch = (p) => {
         
 
         
-        p5s.noiseSeed(8);
+        p5s.noiseSeed(18);
         startColor = p.lerpColor(firstColor, secondColor, 0);
         
         p.strokeWeight(1.5);
